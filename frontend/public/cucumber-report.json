@@ -1,0 +1,23 @@
+[
+  {
+    "name": "User Login on SauceDemo",
+    "elements": [
+      { "name": "Successful login with valid credentials", "steps": [{ "result": { "status": "passed", "duration": 1300000000 } }] },
+      { "name": "Login fails with invalid credentials", "steps": [{ "result": { "status": "passed", "duration": 900000000 } }] }
+    ]
+  },
+  {
+    "name": "Shopping Cart Management",
+    "elements": [
+      { "name": "Add a product to the cart", "steps": [{ "result": { "status": "passed", "duration": 1100000000 } }] },
+      { "name": "Remove a product from the cart", "steps": [{ "result": { "status": "passed", "duration": 1200000000 } }] }
+    ]
+  },
+  {
+    "name": "Checkout Flow",
+    "elements": [
+      { "name": "Successful checkout with valid details", "steps": [{ "result": { "status": "passed", "duration": 1800000000 } }] },
+      { "name": "Checkout fails with missing first name", "steps": [{ "result": { "status": "passed", "duration": 1000000000 } }] }
+    ]
+  }
+]
