@@ -3,7 +3,6 @@ package pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -47,47 +46,40 @@ public class CheckoutPage {
      * because some test scenarios intentionally leave fields empty.
      */
     public void fillCheckoutInfo(String firstName, String lastName, String zipCode) {
-        // Wait until the field is visible, click it, clear it, then type
-        WebElement firstNameEl = wait.until(ExpectedConditions.visibilityOfElementLocated(firstNameField));
-        firstNameEl.click();
-        firstNameEl.clear();
-        if (firstName != null && !firstName.isBlank()) {
-            firstNameEl.sendKeys(firstName);
-            // Verify the value was actually typed (guards against flaky input)
-            wait.until(ExpectedConditions.attributeToBe(firstNameEl, "value", firstName));
-        }
+        typeIntoField(firstNameField, firstName);
+        typeIntoField(lastNameField, lastName);
+        typeIntoField(zipCodeField, zipCode);
+    }
 
-        WebElement lastNameEl = wait.until(ExpectedConditions.visibilityOfElementLocated(lastNameField));
-        lastNameEl.click();
-        lastNameEl.clear();
-        if (lastName != null && !lastName.isBlank()) {
-            lastNameEl.sendKeys(lastName);
-            wait.until(ExpectedConditions.attributeToBe(lastNameEl, "value", lastName));
-        }
-
-        WebElement zipEl = wait.until(ExpectedConditions.visibilityOfElementLocated(zipCodeField));
-        zipEl.click();
-        zipEl.clear();
-        if (zipCode != null && !zipCode.isBlank()) {
-            zipEl.sendKeys(zipCode);
-            wait.until(ExpectedConditions.attributeToBe(zipEl, "value", zipCode));
+    /**
+     * Types a value into a checkout form field.
+     *
+     * The checkout fields are always empty when we first reach them,
+     * so we just click and type — no need to clear. This avoids issues
+     * with element.clear() breaking React's internal state and with
+     * Keys.chord not working consistently across platforms.
+     */
+    private void typeIntoField(By locator, String value) {
+        WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
+        element.click();
+        if (value != null && !value.isBlank()) {
+            element.sendKeys(value);
         }
     }
 
     /**
-     * Clicks the Continue button using JavaScript.
-     * JavascriptExecutor.click() is used instead of regular .click() because
-     * sometimes elements can be covered by floating headers/footers, and
-     * a JS click bypasses that issue.
+     * Clicks the Continue button.
+     * Uses regular Selenium click (not JS click) because SauceDemo's React
+     * form handler requires a native click event to trigger form submission.
      */
     public void clickContinue() {
         WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(continueButton));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
+        btn.click();
     }
 
     public void clickFinish() {
         WebElement btn = wait.until(ExpectedConditions.elementToBeClickable(finishButton));
-        ((JavascriptExecutor) driver).executeScript("arguments[0].click();", btn);
+        btn.click();
         // Wait for the confirmation message to appear before returning
         wait.until(ExpectedConditions.visibilityOfElementLocated(confirmationMessage));
     }
